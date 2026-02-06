@@ -1,0 +1,33 @@
+name: Stock Golden Cross Report
+
+on:
+  schedule:
+    - cron: '0 7 * * *' # 매일 한국 시간 오후 4시
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:     # 우리가 직접 실행 버튼을 누를 수 있게 해줍니다
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Run analysis
+        run: python update_stock.py
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "주식 리포트 자동 업데이트" || echo "No changes to commit"
+          git push
