@@ -2,10 +2,10 @@ name: Stock Golden Cross Report
 
 on:
   schedule:
-    - cron: '*/5 * * * *' 
+    - cron: '*/5 * * * *' # 5분마다 실행
   push:
     branches: [ "main" ]
-  workflow_dispatch:     # 우리가 직접 실행 버튼을 누를 수 있게 해줍니다
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,15 +15,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          
       - name: Run analysis
+        # 이 부분이 추가되어야 파이썬 datetime.now()가 한국 시간으로 작동합니다.
+        env:
+          TZ: Asia/Seoul
         run: python update_stock.py
+        
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
