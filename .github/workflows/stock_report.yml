@@ -2,7 +2,7 @@ name: Stock Golden Cross Report
 
 on:
   schedule:
-    - cron: '0 7 * * *' # 매일 한국 시간 오후 4시
+    - cron: '*/5 * * * *' 
   push:
     branches: [ "main" ]
   workflow_dispatch:     # 우리가 직접 실행 버튼을 누를 수 있게 해줍니다
